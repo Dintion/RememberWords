@@ -32,7 +32,7 @@ public class ReadShare {
     }
 
     public void setPassword(String password) {
-        this.editor.putString("username", username);
+        this.editor.putString("pwd", password);
         this.editor.commit();
     }
 }

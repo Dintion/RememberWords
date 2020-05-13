@@ -2,14 +2,17 @@ package com.liong.rememberwords.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -17,6 +20,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.liong.rememberwords.R;
+import com.liong.rememberwords.dao.WordsDao;
 import com.liong.rememberwords.domain.Word;
 
 import java.util.ArrayList;
@@ -24,41 +28,57 @@ import java.util.ArrayList;
 public class WordsActivity extends AppCompatActivity {
     private static final String TAG = "WordsActivity";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_words);
         ListView wordListView = findViewById(R.id.wordsList);
         ArrayList<Word> WordList = getwordList(getSqliteDatebase());
-        wordListView.setAdapter(new WordListAdapter(WordList));
-
+        WordListAdapter adapter = new WordListAdapter(WordList);
+        wordListView.setAdapter(adapter);
+        wordListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TextView word = view.findViewById(R.id.word);
+                Log.i(TAG, "onItemClick: " + position + word.getText().toString());
+                Intent intent = new Intent(WordsActivity.this, WordInfoActivity.class);
+                intent.putExtra("word", word.getText().toString());
+                startActivity(intent);
+            }
+        });
     }
 
     private ArrayList<Word> getwordList(SQLiteDatabase db) {
         String name = getIntent().getStringExtra("word");
-        String selSql = "select * from word where englishWord like '%"+name+"%'";
-        Log.i(TAG, "getWordList: "+selSql);
+        String selSql = "select * from word where englishWord like '%" + name + "%'";
+        Log.i(TAG, "getWordList: " + selSql);
         Cursor cursor = db.rawQuery(selSql, null);
         ArrayList<Word> wordList = new ArrayList<>();
         while (cursor.moveToNext()) {
             Word Word = new Word();
             Word.setEnglishWord(cursor.getString(0));
             Word.setChineseWord(cursor.getString(2));
-            Log.i(TAG, "getWordList: "+Word);
             wordList.add(Word);
         }
         return wordList;
-    };
+    }
+
+    ;
+
     public class WordListAdapter extends BaseAdapter {
         ArrayList<Word> WordList;
+
         public WordListAdapter(ArrayList<Word> WordList) {
             this.WordList = WordList;
         }
+
         @Override
         public int getCount() {
             //有多少条数据
             return WordList.size();
         }
+
         @Override
         public Object getItem(int i) {
 
@@ -81,6 +101,7 @@ public class WordsActivity extends AppCompatActivity {
             phoneText.setText(WordList.get(i).getChineseWord());
             return view;
         }
+
     }
 
     public SQLiteDatabase getSqliteDatebase() {
@@ -88,6 +109,7 @@ public class WordsActivity extends AppCompatActivity {
             @Override
             public void onCreate(SQLiteDatabase db) {
             }
+
             @Override
             public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             }

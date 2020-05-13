@@ -8,7 +8,7 @@ public class Word {
     private String chineseInstance1;
     private String englishInstance2;
     private String chineseInstance2;
-    private String collect;
+    private int collect;
     private String pron;
 
     public String getEnglishWord() {
@@ -67,11 +67,11 @@ public class Word {
         this.chineseInstance2 = chineseInstance2;
     }
 
-    public String getCollect() {
+    public int getCollect() {
         return collect;
     }
 
-    public void setCollect(String collect) {
+    public void setCollect(int collect) {
         this.collect = collect;
     }
 

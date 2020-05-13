@@ -3,6 +3,7 @@ package com.liong.rememberwords.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -88,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
         }
         if (password.equals(password2)) {
             //将登录信息存入Share
+            SharedPreferences.Editor editor = getSharedPreferences("userLoginInfo", MODE_PRIVATE).edit();
+            ReadShare readShare = new ReadShare(this);
             readShare.setUsername(username);
             readShare.setPassword(password);
             return true;
