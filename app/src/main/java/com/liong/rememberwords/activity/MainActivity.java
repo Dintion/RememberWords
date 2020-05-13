@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +19,7 @@ import com.liong.rememberwords.R;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
     private Button loginButton;
     private Button registerButton;
     private EditText usernameEdit;
@@ -61,19 +63,24 @@ public class MainActivity extends AppCompatActivity {
         this.usernameEdit = findViewById(R.id.usernameText);
     }
     public boolean verify() {
-        String username = this.usernameEdit.toString();
-        String password = this.passwordEdit.toString();
+        String username = this.usernameEdit.getText().toString();
+        String password = this.passwordEdit.getText().toString();
         SQLiteDatabase db = createDb();
         String sql = "select id,password from user_tb where username=?";
         Cursor cursor = db.rawQuery(sql, new String[]{username});
+        Log.i(TAG, "verify: "+username);
         String password2="";
-        if (cursor.moveToNext()){
+        if ("".equals(password) || password == null) {
+            return false;
+        }
+        while (cursor.moveToNext()){
             String user_id = cursor.getString(0);
             password2 = cursor.getString(1);
+            Log.i(TAG, "verify: "+user_id+password2);
             String sql1 = "insert into user_info_tb(user_id,loginTime) values(?,?)";
             db.execSQL(sql1,new String[]{user_id,new Date().toString()});
         }
-        return password==password2;
+        return password.equals(password2);
     }
     public SQLiteDatabase createDb() {
         SQLiteOpenHelper sqLiteOpenHelper = new SQLiteOpenHelper(this, "rememberwords.db", null, 1, null) {
