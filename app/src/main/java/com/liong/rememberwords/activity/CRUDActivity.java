@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.liong.rememberwords.R;
+import com.liong.rememberwords.dao.ReadShare;
 
 public class CRUDActivity extends AppCompatActivity {
     private static final String TAG = "CRUDActivity";
@@ -49,7 +50,6 @@ public class CRUDActivity extends AppCompatActivity {
                 Intent intent = new Intent(CRUDActivity.this, WordsActivity.class);
                 word = word == null ? "" : word;
                 intent.putExtra("word", word);
-
                 startActivity(intent);
                 break;
             case R.id.delete_btn:
@@ -60,10 +60,20 @@ public class CRUDActivity extends AppCompatActivity {
             case R.id.update_btn:
                 String updSql = "update word set chineseWord=? where englishWord ='" + word + "'";
                 db.execSQL(updSql, new String[]{chineseWord});
-                Toast.makeText(this, "修改" + word + "的解释为" + chineseWord, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "修改 " + word + " 的解释为" + chineseWord, Toast.LENGTH_LONG).show();
+                break;
+            case R.id.logoutButton:
+                Log.i(TAG, "operate: 退出登录");
+                Intent intentToMain = new Intent(CRUDActivity.this, MainActivity.class);
+                ReadShare readShare = new ReadShare(this);
+                String username = readShare.getUsername();
+
+                Toast.makeText(this, "退出登录", Toast.LENGTH_SHORT);
+                startActivity(intentToMain);
+
                 break;
             default:
-                Toast.makeText(this, "别乱点", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "别乱点", Toast.LENGTH_SHORT).show();
 
         }
     }

@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +12,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.liong.rememberwords.R;
+import com.liong.rememberwords.dao.UserDao;
+import com.liong.rememberwords.dao.UserInfoDao;
 
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
@@ -22,6 +23,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText passwordEdit;
     private EditText phoneEdit;
     private SQLiteDatabase db;
+    private UserDao userDao;
+    private UserInfoDao userInfoDao;
     String username;
     String password;
     String phone;
@@ -33,9 +36,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         initView();
-        username = usernameEdit.getText().toString();
-        password = passwordEdit.getText().toString();
-        phone = phoneEdit.getText().toString();
         this.registerButton.setOnClickListener(this);
     }
 
@@ -44,28 +44,22 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         this.passwordEdit = findViewById(R.id.passwordRegisterText);
         this.phoneEdit = findViewById(R.id.phoneText);
         this.registerButton = findViewById(R.id.registerRegisterButton);
+        userDao = new UserDao(this);
+        userInfoDao = new UserInfoDao(this);
     }
 
     @Override
     public void onClick(View v) {
+        username = usernameEdit.getText().toString();
+        password = passwordEdit.getText().toString();
+        phone = phoneEdit.getText().toString();
+        Log.i(TAG, "onClick: " + username + password + phone);
         String sql = "insert into user_tb(username,password,phone) values(?,?,?)";
-        this.db = createDb();
+        this.db = userDao.createDb();
         this.db.execSQL(sql, new String[]{username, password, phone});
         Intent intent = new Intent(RegisterActivity.this, CRUDActivity.class);
-//String sql_add_login_ifo="insert into user_info_tb(username,loginTime) values(?,?)";
+        userInfoDao.insertUserIdAndLogin(username);
         Toast.makeText(RegisterActivity.this, getString(R.string.registerSuccess), Toast.LENGTH_LONG).show();
-//                db.execSQL(sql_add_login_ifo,new String[]{username,new Date().toString()});
         startActivity(intent);
-    }
-    public SQLiteDatabase createDb() {
-        SQLiteOpenHelper sqLiteOpenHelper = new SQLiteOpenHelper(this, "rememberwords.db", null, 1, null) {
-            @Override
-            public void onCreate(SQLiteDatabase db) {
-            }
-            @Override
-            public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            }
-        };
-        return sqLiteOpenHelper.getWritableDatabase();
     }
 }
