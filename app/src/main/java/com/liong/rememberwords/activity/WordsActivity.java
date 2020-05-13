@@ -23,32 +23,35 @@ import java.util.ArrayList;
 
 public class WordsActivity extends AppCompatActivity {
     private static final String TAG = "WordsActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_words);
         ListView wordListView = findViewById(R.id.wordsList);
-        ArrayList<Word> WordList = getPhoneList(getSqliteDatebase());
-        wordListView.setAdapter(new PhoneListAdapter(WordList));
+        ArrayList<Word> WordList = getwordList(getSqliteDatebase());
+        wordListView.setAdapter(new WordListAdapter(WordList));
+
     }
 
-    private ArrayList<Word> getPhoneList(SQLiteDatabase db) {
-        String selSql = "select * from word";
+    private ArrayList<Word> getwordList(SQLiteDatabase db) {
+        String name = getIntent().getStringExtra("word");
+        String selSql = "select * from word where englishWord like '%"+name+"%'";
+        Log.i(TAG, "getWordList: "+selSql);
         Cursor cursor = db.rawQuery(selSql, null);
-        ArrayList<Word> phoneList = new ArrayList<>();
+        ArrayList<Word> wordList = new ArrayList<>();
         while (cursor.moveToNext()) {
             Word Word = new Word();
             Word.setEnglishWord(cursor.getString(0));
             Word.setChineseWord(cursor.getString(2));
-            Log.i(TAG, "getPhoneList: "+Word);
-            phoneList.add(Word);
+            Log.i(TAG, "getWordList: "+Word);
+            wordList.add(Word);
         }
-        return phoneList;
+        return wordList;
     };
-    public class PhoneListAdapter extends BaseAdapter {
+    public class WordListAdapter extends BaseAdapter {
         ArrayList<Word> WordList;
-
-        public PhoneListAdapter(ArrayList<Word> WordList) {
+        public WordListAdapter(ArrayList<Word> WordList) {
             this.WordList = WordList;
         }
         @Override
@@ -56,7 +59,6 @@ public class WordsActivity extends AppCompatActivity {
             //有多少条数据
             return WordList.size();
         }
-
         @Override
         public Object getItem(int i) {
 

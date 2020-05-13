@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
@@ -13,6 +14,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.liong.rememberwords.R;
+
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     private Button loginButton;
@@ -60,16 +63,35 @@ public class MainActivity extends AppCompatActivity {
     public boolean verify() {
         String username = this.usernameEdit.toString();
         String password = this.passwordEdit.toString();
-        return true;
+        SQLiteDatabase db = createDb();
+        String sql = "select id,password from user_tb where username=?";
+        Cursor cursor = db.rawQuery(sql, new String[]{username});
+        String password2="";
+        if (cursor.moveToNext()){
+            String user_id = cursor.getString(0);
+            password2 = cursor.getString(1);
+            String sql1 = "insert into user_info_tb(user_id,loginTime) values(?,?)";
+            db.execSQL(sql1,new String[]{user_id,new Date().toString()});
+        }
+        return password==password2;
     }
     public SQLiteDatabase createDb() {
         SQLiteOpenHelper sqLiteOpenHelper = new SQLiteOpenHelper(this, "rememberwords.db", null, 1, null) {
             @Override
             public void onCreate(SQLiteDatabase db) {
+                /**
+                 * 创建对应的数据库
+                 */
                 String sql_create_user = "create table user_tb (id integer primary key autoincrement," +
                         "username varchar(20)," +
                         "password varchar(60)," +
                         "phone varchar(20))";
+                String sql_create_user_login_info = "create table user_info_tb (id integer primary key autoincrement," +
+                        "user_id varchar(120)," +
+                        "loginTime Date," +
+                        "logout Date)";
+                String sql_create_user_words_tb = "create table user_word_tb (id integer primary key autoincrement,user_id varchar(120)," +
+                        "words varchar(512))";
                 String sql_create_words = "CREATE TABLE word (" +
                         "  `englishWord` varchar(512) NOT NULL," +
                         "  `pa` varchar(512) DEFAULT NULL," +
@@ -83,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
                         "  PRIMARY KEY (`englishWord`)" +
                         ")";
                 db.execSQL(sql_create_user);
+                db.execSQL(sql_create_user_login_info);
+                db.execSQL(sql_create_user_words_tb);
                 db.execSQL(sql_create_words);
             }
 

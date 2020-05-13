@@ -5,7 +5,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.liong.rememberdescs.activity.CRUDActivity"
+    tools:context="com.liong.rememberwords.activity.CRUDActivity"
     android:orientation="vertical"
     android:padding="10dp">
 

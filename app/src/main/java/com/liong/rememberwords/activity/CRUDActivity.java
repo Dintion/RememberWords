@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -46,7 +47,9 @@ public class CRUDActivity extends AppCompatActivity {
                 break;
             case R.id.select_btn:
                 Intent intent = new Intent(CRUDActivity.this, WordsActivity.class);
+                word = word == null ? "" : word;
                 intent.putExtra("word", word);
+
                 startActivity(intent);
                 break;
             case R.id.delete_btn:

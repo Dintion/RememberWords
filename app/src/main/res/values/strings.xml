@@ -3,4 +3,5 @@
     <string name="password">密码：</string>
     <string name="login">登录</string>
     <string name="username">用户名</string>
+    <string name="registerSuccess">注册成功</string>
 </resources>
