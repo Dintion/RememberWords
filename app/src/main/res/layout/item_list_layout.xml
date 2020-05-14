@@ -2,21 +2,30 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="10dp"
 
     android:orientation="vertical">
 
         <TextView
             android:id="@+id/word"
-            android:layout_width="98dp"
-            android:layout_height="60dp"
+            android:layout_width="390dp"
+            android:layout_height="30dp"
             android:textColor="#000"
             android:textSize="18sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/paa"
+            android:layout_width="225dp"
+            android:layout_height="20dp"
+            android:textColor="#000"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/desc"
             android:layout_width="match_parent"
+            android:gravity="center_vertical"
             android:layout_height="60dp"
             android:textColor="#000"
             android:textSize="14sp" />

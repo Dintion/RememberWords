@@ -49,14 +49,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="删除"
+            android:text="查看已背"
             android:onClick="operate"/>
         <Button
             android:id="@+id/update_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="修改"
+            android:text="背单词"
             android:onClick="operate"/>
     </LinearLayout>
 <LinearLayout

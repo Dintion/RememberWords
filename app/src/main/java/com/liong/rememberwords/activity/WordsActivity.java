@@ -3,11 +3,8 @@ package com.liong.rememberwords.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,20 +16,24 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.liong.rememberwords.R;
+import com.liong.rememberwords.dao.Dao;
+import com.liong.rememberwords.dao.WordsDao;
 import com.liong.rememberwords.domain.Word;
 
 import java.util.ArrayList;
 
 public class WordsActivity extends AppCompatActivity {
     private static final String TAG = "WordsActivity";
+    private WordsDao wordsDao;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_words);
+        wordsDao = new WordsDao(this);
         ListView wordListView = findViewById(R.id.wordsList);
-        ArrayList<Word> WordList = getwordList(getSqliteDatebase());
+        ArrayList<Word> WordList = getwordList(Dao.getDatabase(this));
         WordListAdapter adapter = new WordListAdapter(WordList);
         wordListView.setAdapter(adapter);
         wordListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -47,18 +48,21 @@ public class WordsActivity extends AppCompatActivity {
     }
 
     private ArrayList<Word> getwordList(SQLiteDatabase db) {
+        ArrayList<Word> words;
         String name = getIntent().getStringExtra("word");
-        String selSql = "select * from word where englishWord like '%" + name + "%'";
-        Log.i(TAG, "getWordList: " + selSql);
-        @SuppressLint("Recycle") Cursor cursor = db.rawQuery(selSql, null);
-        ArrayList<Word> wordList = new ArrayList<>();
-        while (cursor.moveToNext()) {
-            Word Word = new Word();
-            Word.setEnglishWord(cursor.getString(0));
-            Word.setChineseWord(cursor.getString(2));
-            wordList.add(Word);
+        int isRember = getIntent().getIntExtra("isRember",-1);
+        if (isRember != -1) {
+            words = wordsDao.selWordByIsRember(isRember);
+
+        } else {
+            if (!"".equals(name)) {
+                words = wordsDao.selWordByName(name);
+            } else {
+                words = wordsDao.selAllWord();
+            }
         }
-        return wordList;
+
+        return words;
     }
 
     ;
@@ -94,23 +98,11 @@ public class WordsActivity extends AppCompatActivity {
             view = layoutInflater.inflate(R.layout.item_list_layout, null);
             TextView nameText = view.findViewById(R.id.word);
             TextView phoneText = view.findViewById(R.id.desc);
+            TextView pa = view.findViewById(R.id.paa);
             nameText.setText(WordList.get(i).getEnglishWord());
             phoneText.setText(WordList.get(i).getChineseWord());
+            pa.setText("/"+WordList.get(i).getPa()+"/");
             return view;
         }
-
-    }
-
-    public SQLiteDatabase getSqliteDatebase() {
-        SQLiteOpenHelper sqLiteOpenHelper = new SQLiteOpenHelper(this, "rememberwords.db", null, 1) {
-            @Override
-            public void onCreate(SQLiteDatabase db) {
-            }
-
-            @Override
-            public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            }
-        };
-        return sqLiteOpenHelper.getReadableDatabase();
     }
 }

@@ -7,9 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.liong.rememberwords.domain.Word;
 
+import java.util.ArrayList;
+
 public class WordsDao {
     private Context context;
     private SQLiteDatabase database;
+    private String selSql;
 
     public WordsDao(Context context) {
         this.context = context;
@@ -37,4 +40,32 @@ public class WordsDao {
         String sql="update word set isrember =1 where englishWord=?";
         this.database.execSQL(sql,new String[]{word});
     }
+
+    private ArrayList<Word> selWordByName(String name,Integer isrember) {
+        selSql = "select * from word where englishWord like '%" + name + "%'";
+        if (isrember != null) {
+            selSql = selSql+" and isrember="+isrember;
+        }
+        @SuppressLint("Recycle") Cursor cursor = this.database.rawQuery(selSql,null);
+        ArrayList<Word> wordList = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            Word Word = new Word();
+            Word.setEnglishWord(cursor.getString(0));
+            Word.setPa(cursor.getString(1));
+            Word.setChineseWord(cursor.getString(2));
+            wordList.add(Word);
+        }
+        return wordList;
+    }
+    public ArrayList<Word> selAllWord() {
+        return selWordByName("", null);
+    }
+    public ArrayList<Word> selWordByIsRember(Integer isrember) {
+        return selWordByName("", isrember);
+    }
+    public ArrayList<Word> selWordByName(String name) {
+        return selWordByName(name, null);
+    }
+
+
 }

@@ -13,17 +13,20 @@ import android.widget.Toast;
 import com.liong.rememberwords.R;
 import com.liong.rememberwords.dao.ReadShare;
 import com.liong.rememberwords.dao.UserInfoDao;
+import com.liong.rememberwords.dao.WordsDao;
 
 public class CRUDActivity extends AppCompatActivity {
     private static final String TAG = "CRUDActivity";
     private EditText wordEdit;
     private EditText descEdit;
     private SQLiteDatabase db;
+    private WordsDao wordsDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_c_r_u_d);
+        wordsDao = new WordsDao(this);
         SQLiteOpenHelper helper = new SQLiteOpenHelper(this, "rememberwords.db", null, 1) {
             @Override
             public void onCreate(SQLiteDatabase sqLiteDatabase) {
@@ -42,9 +45,14 @@ public class CRUDActivity extends AppCompatActivity {
         String chineseWord = descEdit.getText().toString();
         switch (v.getId()) {
             case R.id.insert_btn:
-                String sql = " insert into word(englishWord,chineseWord) values(?,?) ";
-                db.execSQL(sql, new String[]{word, chineseWord});
-                Toast.makeText(CRUDActivity.this, "添加成功", Toast.LENGTH_SHORT).show();
+                if (!("".equals(word) || "".equals(chineseWord))) {
+                    String sql = " insert into word(englishWord,chineseWord) values(?,?) ";
+                    db.execSQL(sql, new String[]{word, chineseWord});
+                    Toast.makeText(CRUDActivity.this, "添加成功", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(CRUDActivity.this, "请输入要添加的内容", Toast.LENGTH_SHORT).show();
+                }
+
                 break;
             case R.id.select_btn:
                 Intent intent = new Intent(CRUDActivity.this, WordsActivity.class);
@@ -53,14 +61,15 @@ public class CRUDActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.delete_btn:
-                String delSql = "delete from word where englishWord ='" + word + "'";
-                db.execSQL(delSql);
-                Toast.makeText(this, "删除" + word + "成功", Toast.LENGTH_SHORT).show();
+                Intent intent2 = new Intent(CRUDActivity.this, WordsActivity.class);
+                intent2.putExtra("isRember", 1);
+                startActivity(intent2);
                 break;
             case R.id.update_btn:
-                String updSql = "update word set chineseWord=? where englishWord ='" + word + "'";
-                db.execSQL(updSql, new String[]{chineseWord});
-                Toast.makeText(this, "修改 " + word + " 的解释为" + chineseWord, Toast.LENGTH_SHORT).show();
+                Intent intent3 = new Intent(CRUDActivity.this, WordsActivity.class);
+                intent3.putExtra("isRember", 0);
+                startActivity(intent3);
+
                 break;
             case R.id.logoutButton:
                 Intent intentToMain = new Intent(CRUDActivity.this, MainActivity.class);
