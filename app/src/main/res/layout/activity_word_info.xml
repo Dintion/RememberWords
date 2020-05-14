@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="312dp" />
+        app:layout_constraintGuide_begin="180dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline12"
@@ -40,6 +40,7 @@
         android:layout_height="36dp"
         android:gravity="center_vertical"
         android:text="单词"
+        android:textColor="#101010"
         android:textSize="23dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline10"
@@ -47,7 +48,9 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline12"
         app:layout_constraintTop_toTopOf="@+id/guideline9"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0"
+        android:onClick="sound"
+        />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline13"
@@ -88,6 +91,7 @@
         android:layout_width="77dp"
         android:layout_height="30dp"
         android:text="例句"
+        android:textColor="#000"
         android:textSize="24sp"
         android:textStyle="italic"
         app:layout_constraintBottom_toTopOf="@+id/guideline16"
@@ -125,9 +129,12 @@
 
     <TextView
         android:id="@+id/e1"
-        android:layout_width="394dp"
-        android:layout_height="88dp"
+        android:layout_width="385dp"
+        android:layout_height="86dp"
+        android:gravity="center_vertical"
         android:text="TextView"
+        android:textColor="#000"
+
         app:layout_constraintBottom_toTopOf="@+id/guideline17"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -144,8 +151,8 @@
 
     <TextView
         android:id="@+id/c1"
-        android:layout_width="395dp"
-        android:layout_height="93dp"
+        android:layout_width="384dp"
+        android:layout_height="96dp"
         android:text="TextView"
         app:layout_constraintBottom_toTopOf="@+id/guideline18"
         app:layout_constraintEnd_toEndOf="parent"
@@ -156,9 +163,11 @@
 
     <TextView
         android:id="@+id/e2"
-        android:layout_width="392dp"
-        android:layout_height="87dp"
+        android:layout_width="382dp"
+        android:layout_height="84dp"
+        android:gravity="center_vertical"
         android:text="TextView"
+        android:textColor="#000"
         app:layout_constraintBottom_toTopOf="@+id/guideline19"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -168,8 +177,8 @@
 
     <TextView
         android:id="@+id/c2"
-        android:layout_width="394dp"
-        android:layout_height="91dp"
+        android:layout_width="385dp"
+        android:layout_height="92dp"
         android:text="TextView"
         app:layout_constraintBottom_toTopOf="@+id/guideline21"
         app:layout_constraintEnd_toEndOf="parent"
@@ -195,7 +204,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline21"
-        app:layout_constraintVertical_bias="0.437" />
+        app:layout_constraintVertical_bias="0.437"
+        android:onClick="backed"/>
 
     <Button
         android:id="@+id/share"
@@ -208,5 +218,24 @@
         app:layout_constraintStart_toEndOf="@+id/easy"
         app:layout_constraintTop_toTopOf="@+id/guideline21"
         app:layout_constraintVertical_bias="0.437" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="-9dp" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="63dp"
+        android:layout_height="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline11"
+        app:layout_constraintTop_toTopOf="@+id/guideline9"
+        app:srcCompat="@drawable/xlb"
+        android:onClick="sound"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

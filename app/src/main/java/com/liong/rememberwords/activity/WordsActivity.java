@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +19,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.liong.rememberwords.R;
-import com.liong.rememberwords.dao.WordsDao;
 import com.liong.rememberwords.domain.Word;
 
 import java.util.ArrayList;
@@ -41,7 +39,6 @@ public class WordsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 TextView word = view.findViewById(R.id.word);
-                Log.i(TAG, "onItemClick: " + position + word.getText().toString());
                 Intent intent = new Intent(WordsActivity.this, WordInfoActivity.class);
                 intent.putExtra("word", word.getText().toString());
                 startActivity(intent);
@@ -53,7 +50,7 @@ public class WordsActivity extends AppCompatActivity {
         String name = getIntent().getStringExtra("word");
         String selSql = "select * from word where englishWord like '%" + name + "%'";
         Log.i(TAG, "getWordList: " + selSql);
-        Cursor cursor = db.rawQuery(selSql, null);
+        @SuppressLint("Recycle") Cursor cursor = db.rawQuery(selSql, null);
         ArrayList<Word> wordList = new ArrayList<>();
         while (cursor.moveToNext()) {
             Word Word = new Word();

@@ -20,8 +20,10 @@ public class Dao {
                         "user_id varchar(120)," +
                         "loginTime Date," +
                         "logout Date)";
-                String sql_create_user_words_tb = "create table user_word_tb (id integer primary key autoincrement,user_id varchar(120)," +
-                        "words varchar(512))";
+                String sql_create_user_words_tb = "create table user_word_tb (id integer primary key autoincrement," +
+                        "user_id varchar(120)," +
+                        "word varchar(512)," +
+                        "time Date)";
                 String sql_create_words = "CREATE TABLE word (" +
                         "  `englishWord` varchar(512) NOT NULL," +
                         "  `pa` varchar(512) DEFAULT NULL," +
@@ -32,6 +34,7 @@ public class Dao {
                         "  `chineseInstance2` varchar(512) DEFAULT NULL," +
                         "  `collect` int(4) DEFAULT NULL," +
                         "  `pron` varchar(512) DEFAULT NULL," +
+                        "isrember int(1) DEFAULT 0," +
                         "  PRIMARY KEY (`englishWord`)" +
                         ")";
                 db.execSQL(sql_create_user);

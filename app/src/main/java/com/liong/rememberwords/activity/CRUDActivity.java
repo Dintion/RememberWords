@@ -6,13 +6,13 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.liong.rememberwords.R;
 import com.liong.rememberwords.dao.ReadShare;
+import com.liong.rememberwords.dao.UserInfoDao;
 
 public class CRUDActivity extends AppCompatActivity {
     private static final String TAG = "CRUDActivity";
@@ -44,7 +44,7 @@ public class CRUDActivity extends AppCompatActivity {
             case R.id.insert_btn:
                 String sql = " insert into word(englishWord,chineseWord) values(?,?) ";
                 db.execSQL(sql, new String[]{word, chineseWord});
-                Toast.makeText(CRUDActivity.this, "添加成功", Toast.LENGTH_LONG).show();
+                Toast.makeText(CRUDActivity.this, "添加成功", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.select_btn:
                 Intent intent = new Intent(CRUDActivity.this, WordsActivity.class);
@@ -55,22 +55,20 @@ public class CRUDActivity extends AppCompatActivity {
             case R.id.delete_btn:
                 String delSql = "delete from word where englishWord ='" + word + "'";
                 db.execSQL(delSql);
-                Toast.makeText(this, "删除" + word + "成功", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "删除" + word + "成功", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.update_btn:
                 String updSql = "update word set chineseWord=? where englishWord ='" + word + "'";
                 db.execSQL(updSql, new String[]{chineseWord});
-                Toast.makeText(this, "修改 " + word + " 的解释为" + chineseWord, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "修改 " + word + " 的解释为" + chineseWord, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.logoutButton:
-                Log.i(TAG, "operate: 退出登录");
                 Intent intentToMain = new Intent(CRUDActivity.this, MainActivity.class);
                 ReadShare readShare = new ReadShare(this);
-                String username = readShare.getUsername();
-
-                Toast.makeText(this, "退出登录", Toast.LENGTH_SHORT);
+                String userId = readShare.getUserId();
+                new UserInfoDao(this).insertUserIdAndLogout(userId);
+                Toast.makeText(this, "退出登录", Toast.LENGTH_SHORT).show();
                 startActivity(intentToMain);
-
                 break;
             default:
                 Toast.makeText(this, "别乱点", Toast.LENGTH_SHORT).show();

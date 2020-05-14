@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText passwordEdit;
     private SQLiteDatabase db;
     private ReadShare readShare;
+    private String user_id;
 
     @Override
 
@@ -75,22 +76,21 @@ public class MainActivity extends AppCompatActivity {
         String password = this.passwordEdit.getText().toString();
         String sql = "select id,password from user_tb where username=?";
         Cursor cursor = db.rawQuery(sql, new String[]{username});
-        Log.i(TAG, "verify: " + username);
         String password2 = "";
         if ("".equals(password) || password == null) {
             return false;
         }
         while (cursor.moveToNext()) {
-            String user_id = cursor.getString(0);
+            user_id = cursor.getString(0);
             password2 = cursor.getString(1);
-            Log.i(TAG, "verify: " + user_id + password2);
-            String sql1 = "insert into user_info_tb(user_id,loginTime) values(?,?)";
-            db.execSQL(sql1, new String[]{user_id, new Date().toString()});
         }
         if (password.equals(password2)) {
+            String sql1 = "insert into user_info_tb(user_id,loginTime) values(?,?)";
+            db.execSQL(sql1, new String[]{user_id, new Date().toString()});
             //将登录信息存入Share
             SharedPreferences.Editor editor = getSharedPreferences("userLoginInfo", MODE_PRIVATE).edit();
             ReadShare readShare = new ReadShare(this);
+            readShare.setUserId(user_id);
             readShare.setUsername(username);
             readShare.setPassword(password);
             return true;

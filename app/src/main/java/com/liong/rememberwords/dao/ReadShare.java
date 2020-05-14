@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class ReadShare {
+    private String userId;
     private String username;
     private String password;
     private SharedPreferences sharedPreferences;
@@ -19,6 +20,31 @@ public class ReadShare {
     public String getUsername() {
         return  sharedPreferences.getString("username", "");
 
+    }
+
+    public String getUserId() {
+        return sharedPreferences.getString("id","");
+    }
+
+    public void setUserId(String userId) {
+        this.editor.putString("id", userId);
+        this.editor.commit();
+    }
+
+    public SharedPreferences getSharedPreferences() {
+        return sharedPreferences;
+    }
+
+    public void setSharedPreferences(SharedPreferences sharedPreferences) {
+        this.sharedPreferences = sharedPreferences;
+    }
+
+    public SharedPreferences.Editor getEditor() {
+        return editor;
+    }
+
+    public void setEditor(SharedPreferences.Editor editor) {
+        this.editor = editor;
     }
 
     public void setUsername(String username) {

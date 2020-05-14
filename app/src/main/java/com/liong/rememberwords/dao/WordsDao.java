@@ -32,4 +32,9 @@ public class WordsDao {
         }
         return word;
     }
+
+    public void updateIsRember(String word) {
+        String sql="update word set isrember =1 where englishWord=?";
+        this.database.execSQL(sql,new String[]{word});
+    }
 }

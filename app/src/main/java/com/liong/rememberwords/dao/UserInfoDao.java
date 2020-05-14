@@ -15,9 +15,12 @@ public class UserInfoDao {
         userDao = new UserDao(context);
     }
 
-    public void insertUserIdAndLogin(String username) {
-        String id = userDao.selectUserIdByUsername(username);
+    public void insertUserIdAndLogin(String userId) {
         String sql_add_login_ifo = "insert into user_info_tb(user_id,loginTime) values(?,?)";
-        this.database.execSQL(sql_add_login_ifo,new String[]{id,new Date().toString()});
+        this.database.execSQL(sql_add_login_ifo,new String[]{userId,new Date().toString()});
+    }
+    public void insertUserIdAndLogout(String userId) {
+        String sql_add_login_ifo = "insert into user_info_tb(user_id,logout) values(?,?)";
+        this.database.execSQL(sql_add_login_ifo,new String[]{userId,new Date().toString()});
     }
 }

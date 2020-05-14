@@ -3,6 +3,7 @@ package com.liong.rememberwords.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.liong.rememberwords.R;
+import com.liong.rememberwords.dao.ReadShare;
 import com.liong.rememberwords.dao.UserDao;
 import com.liong.rememberwords.dao.UserInfoDao;
 
@@ -28,6 +30,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     String username;
     String password;
     String phone;
+    private ReadShare readShare;
 
 
     @Override
@@ -35,6 +38,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        this.readShare = new ReadShare(this);
         initView();
         this.registerButton.setOnClickListener(this);
     }
@@ -53,13 +57,17 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         username = usernameEdit.getText().toString();
         password = passwordEdit.getText().toString();
         phone = phoneEdit.getText().toString();
-        Log.i(TAG, "onClick: " + username + password + phone);
-        String sql = "insert into user_tb(username,password,phone) values(?,?,?)";
-        this.db = userDao.createDb();
-        this.db.execSQL(sql, new String[]{username, password, phone});
-        Intent intent = new Intent(RegisterActivity.this, CRUDActivity.class);
-        userInfoDao.insertUserIdAndLogin(username);
-        Toast.makeText(RegisterActivity.this, getString(R.string.registerSuccess), Toast.LENGTH_LONG).show();
-        startActivity(intent);
+        if ("".equals(username) || "".equals(password) || "".equals(phone)) {
+            Toast.makeText(this, "错误x0001不能为空", Toast.LENGTH_LONG).show();
+        } else {
+            String sql = "insert into user_tb(username,password,phone) values(?,?,?)";
+            this.db = userDao.createDb();
+            this.db.execSQL(sql, new String[]{username, password, phone});
+            Intent intent = new Intent(RegisterActivity.this, CRUDActivity.class);
+            userInfoDao.insertUserIdAndLogin(readShare.getUserId());
+            Toast.makeText(RegisterActivity.this, getString(R.string.registerSuccess), Toast.LENGTH_LONG).show();
+            startActivity(intent);
+        }
+
     }
 }
