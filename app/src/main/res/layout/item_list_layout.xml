@@ -1,34 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="10dp"
-    >
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="10dp"
 
-    <TextView
-        android:id="@+id/word"
-        android:layout_width="98dp"
-        android:layout_height="60dp"
-        android:textColor="#000"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="12dp"
-        android:layout_height="60dp"
-        android:gravity="center"
-        android:textSize="14sp" />
-
-    <TextView
-        android:id="@+id/desc"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:textSize="14sp"
-        android:textColor="#000"/>
-</LinearLayout>
-
+        <TextView
+            android:id="@+id/word"
+            android:layout_width="98dp"
+            android:layout_height="60dp"
+            android:textColor="#000"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/desc"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:textColor="#000"
+            android:textSize="14sp" />
 
 </LinearLayout>
