@@ -1,6 +1,7 @@
 package com.liong.rememberwords.dao;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -65,6 +66,15 @@ public class WordsDao {
     }
     public ArrayList<Word> selWordByName(String name) {
         return selWordByName(name, null);
+    }
+
+    public int updateWord(Word word) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("chineseword", word.getChineseWord());
+        return this.database.update("word", contentValues, " englishword=?", new String[]{word.getEnglishWord()});
+    }
+    public int delateWord(String word) {
+        return this.database.delete("word",  " englishWord=?", new String[]{word});
     }
 
 

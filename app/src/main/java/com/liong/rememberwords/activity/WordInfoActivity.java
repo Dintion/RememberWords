@@ -1,25 +1,26 @@
 package com.liong.rememberwords.activity;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.FileProvider;
-
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.FileProvider;
 
 import com.liong.rememberwords.R;
 import com.liong.rememberwords.dao.Dao;
@@ -65,36 +66,14 @@ public class WordInfoActivity extends AppCompatActivity {
         c2Ed.setText(word.getChineseInstance2());
     }
 
-
-    private void initView() {
-        EnglishWordEd = findViewById(R.id.EnglishWord);
-        paEd = findViewById(R.id.pa);
-        ChineseWordEd = findViewById(R.id.trans);
-        e1Ed = findViewById(R.id.e1);
-        c1Ed = findViewById(R.id.c1);
-        e2Ed = findViewById(R.id.e2);
-        c2Ed = findViewById(R.id.c2);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.share, menu);
+        return true;
     }
 
-    public void backed(View v) {
-        Log.i(TAG, "onClick: 我记住了");
-        SQLiteDatabase database = Dao.getDatabase(WordInfoActivity.this);
-        String sql = "insert into user_word_tb(user_id,word,time) values(?,?,?)";
-        new WordsDao(this).updateIsRember(word.getEnglishWord());
-        database.execSQL(sql, new String[]{new ReadShare(this).getUserId(), word.getEnglishWord(), new Date().toString()});
-    }
-
-    public void sound(View view) {
-        Intent intent = new Intent(WordInfoActivity.this, SoundIntentService.class);
-        String actionMusic = SoundIntentService.ACTION_MUSIC;
-        intent.setAction(actionMusic);
-        intent.putExtra("soundPath", word.getPron());
-        startService(intent);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.P)
-    public void share(View v) {
-
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         /**
          * 获取屏幕布局图片
          */
@@ -102,14 +81,6 @@ public class WordInfoActivity extends AppCompatActivity {
         String imgpath = saveImage();
         File file = new File(imgpath);
         Uri uri;
-
-//        Intent intent = new Intent();
-//        intent.setAction(Intent.ACTION_SEND);
-//        intent.putExtra(Intent.EXTRA_TEXT, "考四级不容易，所以我用大家都在用的我爱记单词背" + word.getEnglishWord() + ",它的意思是:" + word.getChineseWord());
-//        intent.setType("text/plain");
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//        startActivity(Intent.createChooser(intent, "选择分享应用"));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
             uri = FileProvider.getUriForFile(this, "com.liong.rememberwords.fileprovider", file);
@@ -123,7 +94,35 @@ public class WordInfoActivity extends AppCompatActivity {
         intent.putExtra(Intent.EXTRA_STREAM, uri);
         intent.setType("image/*");
         startActivity(intent);
-        file.delete();
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void initView() {
+        EnglishWordEd = findViewById(R.id.EnglishWord);
+        paEd = findViewById(R.id.pa);
+        ChineseWordEd = findViewById(R.id.trans);
+        e1Ed = findViewById(R.id.e1);
+        c1Ed = findViewById(R.id.c1);
+        e2Ed = findViewById(R.id.e2);
+        c2Ed = findViewById(R.id.c2);
+    }
+
+    public void backed(View v) {
+        SQLiteDatabase database = Dao.getDatabase(WordInfoActivity.this);
+        String sql = "insert into user_word_tb(user_id,word,time) values(?,?,?)";
+        new WordsDao(this).updateIsRember(word.getEnglishWord());
+        database.execSQL(sql, new String[]{new ReadShare(this).getUserId(), word.getEnglishWord(), new Date().toString()});
+        Intent intent = new Intent(this, WordsActivity.class);
+        intent.putExtra("isRember", 0);
+        startActivity(intent);
+    }
+
+    public void sound(View view) {
+        Intent intent = new Intent(WordInfoActivity.this, SoundIntentService.class);
+        String actionMusic = SoundIntentService.ACTION_MUSIC;
+        intent.setAction(actionMusic);
+        intent.putExtra("soundPath", word.getPron());
+        startService(intent);
     }
 
     // 1. 初始化布局：
@@ -180,9 +179,6 @@ public class WordInfoActivity extends AppCompatActivity {
                 file.getParentFile().mkdirs();
             }
             fos = new FileOutputStream(file);
-
-            //当指定压缩格式为PNG时保存下来的图片显示正常
-//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
             Log.e("MainActivity", "图片生成：" + file.getAbsolutePath());
             //当指定压缩格式为JPEG时保存下来的图片背景为黑色
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);

@@ -31,11 +31,10 @@
             android:exported="true"/>
 
         <activity
-            android:name=".activity.WordInfoActivity"
-            android:launchMode="singleTask" />
+            android:name=".activity.WordInfoActivity"/>
         <activity android:name=".activity.CRUDActivity" />
         <activity android:name=".activity.ShareActivity" />
-        <activity android:name=".activity.WordsActivity" />
+        <activity android:name=".activity.WordsActivity" android:launchMode="singleTop"/>
         <activity android:name=".activity.RegisterActivity" />
         <activity android:name=".activity.MainActivity">
             <intent-filter>
@@ -44,10 +43,5 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
-    ​
 </application>
-
-
 </manifest>
