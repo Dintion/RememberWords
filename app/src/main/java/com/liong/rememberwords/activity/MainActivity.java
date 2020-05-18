@@ -1,22 +1,22 @@
 package com.liong.rememberwords.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.liong.rememberwords.R;
-import com.liong.rememberwords.dao.UserDao;
 import com.liong.rememberwords.dao.ReadShare;
+import com.liong.rememberwords.dao.UserDao;
+import com.liong.rememberwords.dao.UserInfoDao;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private SQLiteDatabase db;
     private ReadShare readShare;
     private String user_id;
+    private UserInfoDao userInfoDao;
+    private String userLastLoginTime;
 
     @Override
 
@@ -58,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 boolean verify = verify();
                 if (verify) {
-                    Toast.makeText(MainActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "登陆成功，上次登录时间："+userLastLoginTime, Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(MainActivity.this, CRUDActivity.class);
                     startActivity(intent);
                 } else {
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         this.usernameEdit = findViewById(R.id.usernameText);
         this.db = new UserDao(this).createDb();
         readShare = new ReadShare(this);
+        userInfoDao = new UserInfoDao(this);
     }
 
     public boolean verify() {
@@ -91,8 +94,9 @@ public class MainActivity extends AppCompatActivity {
             password2 = cursor.getString(1);
         }
         if (password.equals(password2)) {
-            String sql1 = "insert into user_info_tb(user_id,loginTime) values(?,?)";
-            db.execSQL(sql1, new String[]{user_id, new Date().toString()});
+            Log.i(TAG, "用户id" + user_id);
+            userLastLoginTime = userInfoDao.getUserLastLoginTime(user_id);
+            userInfoDao.insertUserIdAndLogin(user_id);
             //将登录信息存入Share
             SharedPreferences.Editor editor = getSharedPreferences("userLoginInfo", MODE_PRIVATE).edit();
             ReadShare readShare = new ReadShare(this);
@@ -110,24 +114,25 @@ public class MainActivity extends AppCompatActivity {
 
         if ((new File(DB_PATH + DB_NAME).exists() == false)) {
             File f = new File(DB_PATH);
+            // 检查数据库路径文件夹是否存在，不存在的话就建立
             if (!f.exists()) {
                 f.mkdir();
             }
+            try {
+                InputStream is = getBaseContext().getAssets().open(DB_NAME);
+                OutputStream os = new FileOutputStream(DB_PATH + DB_NAME);
+                byte[] buffer = new byte[1024 * 10];
+                int length;
+                while ((length = is.read(buffer)) > 0) {
+                    os.write(buffer, 0, length);
+                }
+                os.flush();
+                os.close();
+                is.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }  //  将assets中的数据库文件复制到手机中
+        };
 
-        };// 检查数据库路径文件夹是否存在，不存在的话就建立
-        try {
-            InputStream is = getBaseContext().getAssets().open(DB_NAME);
-            OutputStream os = new FileOutputStream(DB_PATH + DB_NAME);
-            byte[] buffer = new byte[1024 * 10];
-            int length;
-            while ((length = is.read(buffer)) > 0) {
-                os.write(buffer, 0, length);
-            }
-            os.flush();
-            os.close();
-            is.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }  //  将assets中的数据库文件复制到手机中
     }
 }

@@ -8,6 +8,7 @@ public class ReadShare {
     private String userId;
     private String username;
     private String password;
+    private String loginTime;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
@@ -15,6 +16,16 @@ public class ReadShare {
     public ReadShare(Context context) {
         this.sharedPreferences = context.getSharedPreferences("userLoginInfo", Context.MODE_PRIVATE);
         this.editor = this.sharedPreferences.edit();
+    }
+
+    public String getLoginTime() {
+        return  sharedPreferences.getString("loginTime", "");
+
+    }
+
+    public void setLoginTime(String loginTime) {
+        this.editor.putString("loginTime", userId);
+        this.editor.commit();
     }
 
     public String getUsername() {

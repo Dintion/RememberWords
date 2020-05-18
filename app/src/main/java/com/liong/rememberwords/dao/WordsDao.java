@@ -76,6 +76,4 @@ public class WordsDao {
     public int delateWord(String word) {
         return this.database.delete("word",  " englishWord=?", new String[]{word});
     }
-
-
 }
